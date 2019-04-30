@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:include="fragments/head"></th:block>
+<body>
+
+<div class="container" style="margin-top: 50px;">
+    <div class="row">
+        <div class="col">
+            <h5>Genres:Movies (M:M)</h5>
+            <h5>Genre: = <span th:text="${genre.name}"></span> has the following products:</h5>
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Nested Table</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="movie : ${movies}">
+                    <td th:text="${movie.id}"></td>
+                    <td th:text="${movie.name}"></td>
+                    <td><a th:href="@{/getGenresByMovie/{genreId}(genreId=${genre.id})}">show all genres</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- Table End-->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <!-- movie pagination -->
+            <nav aria-label="Pagination" th:if="${movies.totalPages gt 0}">
+                <ul class="pagination justify-content-center font-weight-bold">
+                    <li class="page-item" th:classappend="${movies.number eq 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/getMoviesByGenre/{genreId}?page={id}(genreId=${genre.id},id=${movies.number lt 2 ? 1 : movies.number})}"
+
+                           aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${i eq movies.number + 1} ? 'active'"
+                        th:each="i : ${#numbers.sequence( 1, movies.totalPages, 1)}">
+                        <a class="page-link" th:href="@{/getMoviesByGenre/{genreId}?page={id}(genreId=${genre.id},id=${i})}"
+                           th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${movies.number + 1 eq movies.totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/getMoviesByGenre/{genreId}?page={id}(genreId=${genre.id},id=${movies.number + 2})}"
+                           aria-label="Next" title="Next Page" data-toggle="tooltip">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<th:block th:include="fragments/footer"></th:block>
+</body>
+</html>
